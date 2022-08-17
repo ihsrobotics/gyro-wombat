@@ -1,6 +1,8 @@
-# Gyro Functions
+# Gyro Functions (advanced)
 ## About
 This is a folder with functions using the gyro.
+This folder has a more advanced setup than the simple gyro
+and requires compiling cpp files.
 ## How to use
 First, compile `gyro_cpp.cpp` on the wombat using 
 `g++ ./gyro_cpp.cpp -lkipr -lwallaby -std=c++11 --shared -fPIC -o gyro.so`.

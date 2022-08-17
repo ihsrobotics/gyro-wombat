@@ -92,12 +92,11 @@ void gyro_get_biases(const char* fpath)
 // ---------- movement functions ----------
 /**
  * @brief Drives the roomba in a straight line for `duration` seconds.
- * Do not use negative numbers. There is a separate function for that
  *
  * @param duration how long to drive forward for
  * @param speed speed at which to drive.
  */
-void drive_straight(double duration, size_t speed)
+void drive_straight(double duration, int speed)
 {
     double start_time = seconds();
     int left_speed = speed;
@@ -109,6 +108,7 @@ void drive_straight(double duration, size_t speed)
     while (seconds() - start_time < duration) {
         create_drive_direct(left_speed, right_speed);
         // correct errors
+        // clockwise > 0, counterclockwise < 0
         if (getAccumulator() > 0) {
             right_speed = max(right_speed + 1, speed);
             left_speed = min(speed, left_speed - 1);
@@ -119,9 +119,10 @@ void drive_straight(double duration, size_t speed)
         }
         msleep(1);
     }
-
+    create_drive_direct(0, 0);
     cleanupGetGyroVals();
 }
+
 /**
  * @brief Turns `degrees` degrees. Note that, it will stop as soon as abs(rotation) is equal
  * to the desired turn. For example, if you wanted to turn 360 degrees right and you picked
