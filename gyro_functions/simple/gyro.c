@@ -9,7 +9,7 @@
 // adjust this number if it over or underturns
 // if it underturns, make this greater
 // if it overturns, make this smaller
-double counts_till_360 = 848000;
+double counts_till_360 = 1610000;
 double gyro_bias = 0;
 
 // ---------- calibraters ----------
@@ -43,18 +43,19 @@ void drive_straight(double duration, int speed)
     int right_speed = speed;
 
     double accumulator = 0;
+    int correction = 1;
 
     while (seconds() - start_time < duration) {
         create_drive_direct(left_speed, right_speed);
         accumulator += gyro_z() - gyro_bias;
         // correct errors
         if (accumulator > 0) {
-            right_speed = max(right_speed + 1, speed);
-            left_speed = min(speed, left_speed - 1);
+            right_speed = max(right_speed + correction, speed);
+            left_speed = min(speed, left_speed - correction);
         }
         if (accumulator < 0) {
-            left_speed = max(left_speed + 1, speed);
-            right_speed = min(speed, right_speed - 1);
+            left_speed = max(left_speed + correction, speed);
+            right_speed = min(speed, right_speed - correction);
         }
         msleep(1);
     }
