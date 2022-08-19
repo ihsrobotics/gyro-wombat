@@ -8,33 +8,50 @@
 
 double accumulator;
 size_t samplesTaken;
-double bias_z;
+double bias_z = 0;
 double theta;
 bool run;
-int nanosecondInterval = 2;
+int nanosecondInterval = 500000;
+int gyroSensitivity;
 std::chrono::nanoseconds nsInterval(nanosecondInterval);
 std::thread gyroThread;
 std::chrono::high_resolution_clock gyroClock;
 
-void getAccelVals(size_t samples)
+void getGyroSamples(size_t samples)
 {
+    accumulator = 0;
     std::chrono::high_resolution_clock::time_point start;
-    while (samplesTaken < samples) {
-        start = accelClock.now();
-        accumulator += static_cast<double>(gyro_z()) / (1 << 15) - bias_z;
+    long long count;
+    while (samplesTaken < samples)
+    {
+        start = gyroClock.now();
+        accumulator += static_cast<double>(gyro_z()) / (1 << 15) * gyroSensitivity - bias_z;
         ++samplesTaken;
-        std::this_thread::sleep_until(start + nsInterval);
+        count = (gyroClock.now() - start).count();
+        if (count > nanosecondInterval)
+        {
+            std::cout << "fell behind!! at " << gyroClock.now().time_since_epoch().count() << std::endl;
+            return;
+        }
+        std::this_thread::sleep_for(std::chrono::nanoseconds(nanosecondInterval - count));
     }
 }
 
 void getGyroVals()
 {
     std::chrono::high_resolution_clock::time_point start;
-    while (run) {
+    long long count;
+    while (run)
+    {
         start = gyroClock.now();
-        double degreesPerSecond = static_cast<double>(gyro_z()) / (1 << 15) - bias_z;
+        double degreesPerSecond = static_cast<double>(gyro_z()) / (1 << 15) * gyroSensitivity - bias_z;
+        count = (gyroClock.now() - start).count();
+        if (count > nanosecondInterval)
+        {
+            std::cout << "fell behind!!" << std::endl;
+        }
 
-        std::this_thread::sleep_until(start + nsInterval);
+        std::this_thread::sleep_for(std::chrono::nanoseconds(nanosecondInterval - count));
     }
 }
 bool setupGetGyroVals()
@@ -63,6 +80,11 @@ bool setBias(double _bias)
     return true;
 }
 
+double getBias()
+{
+    return bias_z;
+}
+
 double getAccumulator()
 {
     return accumulator;
@@ -70,9 +92,16 @@ double getAccumulator()
 
 void calibrateGyro(size_t samples)
 {
+    setup_gyro_sensitivity();
+    gyroSensitivity = get_gyro_sensitivity();
     accumulator = 0;
     samplesTaken = 0;
-    getGyroVals(samples);
-    bias_z = accumulator / samplesTaken;
-    std::cout << "accel calibrated in x, y, z direction" << std::endl;
+    getGyroSamples(samples);
+    setBias(accumulator / samplesTaken);
+    std::cout << "gyro calibrated in z direction" << std::endl;
+}
+
+int getSamplesTaken()
+{
+    return samplesTaken;
 }

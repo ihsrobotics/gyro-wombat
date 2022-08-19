@@ -13,21 +13,6 @@ double gyro_bias = 0;
 
 // ---------- calibraters ----------
 /**
- * @brief Calibrates the gyro for sampling.
- *
- * @param samples the number of samples to take
- */
-void gyro_calib_bias(int samples)
-{
-    double total = 0;
-    for (int i = 0; i < samples; ++i) {
-        total += gyro_z();
-        msleep(1);
-    }
-    gyro_bias = total / samples;
-    printf("finished with bias %lf\n", gyro_bias);
-}
-/**
  * @brief calibrates the counts till 360
  *
  */
@@ -41,7 +26,8 @@ void gyro_calib_degrees()
     startGetGyroVals();
 
     // wait
-    while (seconds() - start_time < TIME_TO_WAIT) {
+    while (seconds() - start_time < TIME_TO_WAIT)
+    {
     }
 
     // cleanup
@@ -57,8 +43,6 @@ void gyro_calib_degrees()
  */
 void gyro_calib()
 {
-    gyro_calib_bias(20);
-    setBias(gyro_bias);
     gyro_calib_degrees();
 }
 
@@ -68,9 +52,9 @@ void gyro_calib()
  *
  * @param fpath the name of the file
  */
-void gyro_write_biases(const char* fpath)
+void gyro_write_biases(const char *fpath)
 {
-    FILE* file = fopen(fpath, "wb");
+    FILE *file = fopen(fpath, "wb");
     fwrite(&gyro_bias, sizeof(double), 1, file);
     fwrite(&counts_till_360, sizeof(double), 1, file);
     fclose(file);
@@ -80,9 +64,9 @@ void gyro_write_biases(const char* fpath)
  *
  * @param fpath the name of the file
  */
-void gyro_get_biases(const char* fpath)
+void gyro_get_biases(const char *fpath)
 {
-    FILE* file = fopen(fpath, "rb");
+    FILE *file = fopen(fpath, "rb");
     fread(&gyro_bias, sizeof(double), 1, file);
     fread(&counts_till_360, sizeof(double), 1, file);
     fclose(file);
@@ -105,15 +89,18 @@ void drive_straight(double duration, int speed)
     setupGetGyroVals();
     startGetGyroVals();
 
-    while (seconds() - start_time < duration) {
+    while (seconds() - start_time < duration)
+    {
         create_drive_direct(left_speed, right_speed);
         // correct errors
         // clockwise > 0, counterclockwise < 0
-        if (getAccumulator() > 0) {
+        if (getAccumulator() > 0)
+        {
             right_speed = max(right_speed + 1, speed);
             left_speed = min(speed, left_speed - 1);
         }
-        if (getAccumulator() < 0) {
+        if (getAccumulator() < 0)
+        {
             left_speed = max(left_speed + 1, speed);
             right_speed = min(speed, right_speed - 1);
         }
@@ -139,7 +126,8 @@ void turn_degrees(double degrees, int left_wheel_speed, int right_wheel_speed)
     startGetGyroVals();
 
     create_drive_direct(left_wheel_speed, right_wheel_speed);
-    while (abs(getAccumulator()) < degrees * counts_till_360 / 360) {
+    while (abs(getAccumulator()) < degrees * counts_till_360 / 360)
+    {
     }
     create_drive_direct(0, 0);
     cleanupGetGyroVals();
@@ -149,8 +137,16 @@ int main()
 {
     printf("hello yall");
     // calibrate
-    gyro_calib();
-    gyro_write_biases("biases.bin");
+    // gyro_calib();
+    // gyro_write_biases("biases.bin");
+
+    int samples = 100;
+    calibrateGyro(samples);
+    printf("bias is %lf\n", getBias());
+
+    getGyroSamples(samples);
+    printf("average value was now %lf\n", getAccumulator() / samples);
+    printf("number of samples taken was %i\n", getSamplesTaken());
 
     // read biases
     // gyro_get_biases("biases.bin");
