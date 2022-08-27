@@ -41,8 +41,9 @@ void gyro_calib_degrees()
  * gyro_calib_bias and gyro_calib_degrees
  *
  */
-void gyro_calib()
+void gyro_calib(size_t samples)
 {
+    calibrateGyro(samples);
     gyro_calib_degrees();
 }
 
@@ -136,12 +137,12 @@ void turn_degrees(double degrees, int left_wheel_speed, int right_wheel_speed)
 int main()
 {
     printf("hello yall");
-    // calibrate
-    // gyro_calib();
-    // gyro_write_biases("biases.bin");
 
+    // calibrate
     int samples = 100;
-    calibrateGyro(samples);
+    gyro_calib(samples);
+    gyro_write_biases("biases.bin");
+
     printf("bias is %lf\n", getBias());
 
     getGyroSamples(samples);

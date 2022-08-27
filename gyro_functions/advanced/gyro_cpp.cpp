@@ -11,7 +11,7 @@ size_t samplesTaken;
 double bias_z = 0;
 double theta;
 bool run;
-int nanosecondInterval = 500000;
+int nanosecondInterval = 3000000;
 int gyroSensitivity;
 std::chrono::nanoseconds nsInterval(nanosecondInterval);
 std::thread gyroThread;
@@ -25,7 +25,7 @@ void getGyroSamples(size_t samples)
     while (samplesTaken < samples)
     {
         start = gyroClock.now();
-        accumulator += static_cast<double>(gyro_z()) / (1 << 15) * gyroSensitivity - bias_z;
+        accumulator += gyro_z() - bias_z;
         ++samplesTaken;
         count = (gyroClock.now() - start).count();
         if (count > nanosecondInterval)
@@ -92,8 +92,6 @@ double getAccumulator()
 
 void calibrateGyro(size_t samples)
 {
-    setup_gyro_sensitivity();
-    gyroSensitivity = get_gyro_sensitivity();
     accumulator = 0;
     samplesTaken = 0;
     getGyroSamples(samples);
