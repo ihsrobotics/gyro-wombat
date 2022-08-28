@@ -1,3 +1,4 @@
+default: all
 all: gyro_cpp gyro_c
 
 gyro_cpp: gyro_accumulator.cpp gyro_accumulator.h

@@ -8,7 +8,9 @@
 #include <algorithm>
 #include <limits>
 #include "gyro_accumulator.h"
+#ifndef between
 #define between(val, _min, _max) (val >= _min && val <= _max)
+#endif
 using namespace std;
 using namespace chrono;
 
