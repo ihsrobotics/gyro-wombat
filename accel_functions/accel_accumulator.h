@@ -14,7 +14,8 @@ typedef unsigned long size_t;
     void calibAccel(size_t samples);
 
     void printAccelSamples(const char *fpath, size_t samples);
-    double getPosition();
+    double getPositionX();
+    double getPositionY();
 #ifdef __cplusplus
 }
 #endif

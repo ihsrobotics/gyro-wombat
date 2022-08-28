@@ -1,3 +1,4 @@
+// TODO - redo this to reflect accel_accumulator.cpp
 #include <kipr/wallaby.h>
 #include <stdio.h>
 #include <stdlib.h>
