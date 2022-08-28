@@ -16,7 +16,7 @@ size_t samplesTaken = 0;
 double bias_y = 0, bias_x = 0;
 bool run;
 int nanosecondInterval = 4000000;
-double accelSensitivity = 9.81;
+double accelSensitivity = 9.81 * 2; // 2G
 double minStationaryYVal = 0, maxStationaryYVal = 0, minStationaryXVal = 0, maxStationaryXVal = 0;
 double posX = 0, posY = 0;
 chrono::nanoseconds nsInterval(nanosecondInterval);

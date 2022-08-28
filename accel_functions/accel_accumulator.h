@@ -7,9 +7,9 @@ extern "C"
 typedef unsigned long size_t;
 #endif
 
-    bool setupGetGyroVals();
-    bool startGetGyroVals();
-    bool cleanupGetGyroVals();
+    bool setupGetAccelVals();
+    bool startGetAccelVals();
+    bool cleanupGetAccelVals();
 
     void calibAccel(size_t samples);
 
