@@ -1,4 +1,3 @@
-// TODO - redo this to reflect accel_accumulator.cpp
 #include <kipr/wallaby.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -72,6 +71,6 @@ int main()
     cleanupGetAccelVals();
 
     // check results
-    printf("finished at x: %lf, y: %lf\n", getPositionX(), getPositionY());
+    printf("finished at x: %lf, y: %lf meters \n", getPositionX(), getPositionY());
     return 0;
 }
