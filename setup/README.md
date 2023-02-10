@@ -1,7 +1,7 @@
 # How to setup the MPU9250 (gyroscope/accelerometer)
 ## Step 1 - Copy File
 Copy the provided .bin file to the wombat.
-To do this, run `scp ./wombat.bin pi@192.168.125.1:~/wombat_v9.bin`
+To do this, run `scp ./wombat.bin pi@192.168.125.1:~/wallaby_v9.bin`
 from the command line.
 ## Step 2 - Edit Script
 You must edit `~/wallaby_flash` on the wombat. Change `BINFILE` to be
